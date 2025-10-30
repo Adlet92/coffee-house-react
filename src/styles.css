@@ -240,7 +240,7 @@ html {
 
 .featured {
   width: 1440px;
-  height: 799px;
+  /* height: 799px; */
   margin: 0 auto;
   padding: 0px 40px;
   position: relative;

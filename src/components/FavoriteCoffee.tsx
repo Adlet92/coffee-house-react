@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../styles.css";
+// import "../styles.css";
 
 interface FavoriteCoffee {
   id: number;
@@ -27,7 +27,6 @@ const FavoriteCoffee: React.FC = () => {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  // Fetch from API
   useEffect(() => {
     const fetchFavorites = async () => {
       try {

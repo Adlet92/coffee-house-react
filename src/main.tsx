@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import App from "./App";
 import MenuPage from "./components/Menu/MenuPage";
-// import "./styles.css";
+import "./styles.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
