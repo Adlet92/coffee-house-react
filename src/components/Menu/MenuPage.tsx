@@ -108,9 +108,9 @@ const MenuPage: React.FC = () => {
                     className="coffee-img"
                   />
                 </div>
-                <div className="drink">
-                  <h3 className="drink-name">{product.name}</h3>
-                  <p className="drink-description">{product.description}</p>
+                <div className="product">
+                  <h3 className="product-name">{product.name}</h3>
+                  <p className="product-description">{product.description}</p>
                   <div className="price-container">
                     {product.discountPrice ? (
                       <>
@@ -120,7 +120,7 @@ const MenuPage: React.FC = () => {
                         <span className="original-price">${product.price}</span>
                       </>
                     ) : (
-                      <span className="drink-price">${product.price}</span>
+                      <span className="product-price">${product.price}</span>
                     )}
                   </div>
                 </div>
