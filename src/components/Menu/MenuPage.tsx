@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { getImageNumber } from "../../utils/getImageNumber";
 import Footer from "../Footer";
 import Header from "../Header";
 import "./menu.css";
+import ProductModal from "./ProductModal";
 
 interface Product {
   id: number;
@@ -22,6 +24,9 @@ const MenuPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState("coffee");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("coffee");
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const categories = [
     { name: "Coffee", icon: "/img/menu-page/coffee-icon.png" },
@@ -52,7 +57,6 @@ const MenuPage: React.FC = () => {
   const filtered = products.filter(
     (p) => p.category.toLowerCase() === activeCategory
   );
-
   return (
     <div className="page-container">
       <Header />
@@ -100,10 +104,18 @@ const MenuPage: React.FC = () => {
           {!loading &&
             !error &&
             filtered.map((product, index) => (
-              <div key={product.id} className="coffee-card">
+              <div
+                key={product.id}
+                className="coffee-card"
+                onClick={() => {
+                  setSelectedProduct(product.id);
+                  setSelectedCategory(activeCategory);
+                  setSelectedIndex(index);
+                }}
+              >
                 <div className="container-coffee-img">
                   <img
-                    src={`/img/menu-page/${activeCategory}-${(index % 8) + 1}.svg`}
+                    src={`/img/menu-page/${activeCategory}-${getImageNumber(activeCategory, index)}.svg`}
                     alt={product.name}
                     className="coffee-img"
                   />
@@ -128,7 +140,15 @@ const MenuPage: React.FC = () => {
             ))}
         </div>
       </section>
-
+      {selectedProduct && (
+        <ProductModal
+          productId={selectedProduct}
+          category={selectedCategory}
+          index={selectedIndex}
+          onClose={() => setSelectedProduct(null)}
+          isUserLoggedIn={false}
+        />
+      )}
       <Footer />
     </div>
   );
