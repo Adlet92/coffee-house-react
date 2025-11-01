@@ -1,7 +1,10 @@
 import React from "react";
-// import '../styles.css';
+import { useNavigate } from "react-router-dom";
+import { useCart } from "./Card/cardContext";
 
 const Header: React.FC = () => {
+  const { cartCount } = useCart();
+  const navigate = useNavigate();
   return (
     <header className="header">
       <div className="logo">
@@ -16,14 +19,23 @@ const Header: React.FC = () => {
           <li><a href="#contacts">Contacts</a></li>
         </ul>
       </nav>
-
-      <a href="/menu" className="menu-link">
-        <div className="menu-wrapper">
+      <div className="menu-wrapper">
+        <div
+          className="shopping-bag-icon"
+          onClick={() => navigate("/cart")}
+          style={{ cursor: 'pointer' }}
+        >
+          <img src="../img/menu-page/shopping-bag.svg" alt="Cart Icon" className="cart-icon"/>
+          <span className={`cart-count ${cartCount === 0 ? "hidden" : ""}`}>{cartCount}</span>
+        </div>
+        <a href="/menu" className="menu-link">
+          <div className="menu-wrapper">
           <span className="menu-text">Menu</span>
           <img src="/img/main-page/coffee-cup.svg" alt="Cup Icon" className="menu-icon" />
           <div className="header-line"></div>
         </div>
-      </a>
+        </a>
+      </div>
     </header>
   );
 };

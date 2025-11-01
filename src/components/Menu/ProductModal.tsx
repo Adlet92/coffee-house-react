@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getImageNumber } from "../../utils/getImageNumber";
+import { useCart } from "../Card/cardContext";
 import "./menu.css";
 
 type Size = {
@@ -48,6 +49,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const [selectedAdditives, setSelectedAdditives] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [visibleTooltip, setVisibleTooltip] = useState<string | null>(null);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     if (!productId) return;
@@ -74,6 +76,18 @@ const ProductModal: React.FC<ProductModalProps> = ({
     fetchProductDetails();
   }, [productId]);
 
+  useEffect(() => {
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      onClose();
+    }
+  };
+
+  document.addEventListener("keydown", handleKeyDown);
+  return () => document.removeEventListener("keydown", handleKeyDown);
+}, [onClose]);
+
+
   const handleToggleAdditive = (name: string) => {
     setSelectedAdditives((prev) =>
       prev.includes(name)
@@ -96,6 +110,31 @@ const ProductModal: React.FC<ProductModalProps> = ({
     }, 0);
 
     return basePrice + additivesPrice;
+  };
+    const handleAddToCart = () => {
+    if (!product) return;
+
+    const additivesArr = selectedAdditives;
+    const sizeData = product.sizes[selectedSize];
+    const basePrice = isUserLoggedIn && sizeData.discountPrice ? parseFloat(sizeData.discountPrice) : parseFloat(sizeData.price);
+    const additivesPrice = selectedAdditives.reduce((acc, name) => {
+      const additive = product.additives.find(a => a.name === name);
+      return acc + (additive ? parseFloat(additive.price) : 0);
+    }, 0);
+
+    const totalPrice = basePrice + additivesPrice;
+
+    addToCart({
+      id: product.id,
+      name: product.name,
+      size: sizeData.size,
+      additives: additivesArr,
+      price: totalPrice,
+      quantity: 1,
+      img: `/img/menu-page/${category}-${getImageNumber(category, index)}.svg`,
+    });
+
+    onClose();
   };
 
    const createTooltipContent = (price: string, discountPrice?: string) => {
@@ -195,8 +234,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   <span className="modal-final-price">Total:</span>
                   <span className="modal-final-price">${price.toFixed(2)}</span>
                 </div>
-
-                <button className="add-to-cart-btn">Add to cart</button>
+                  <button className="add-to-cart-btn" onClick={handleAddToCart}>
+                    Add to cart
+                  </button>
               </div>
             </>
           )}
