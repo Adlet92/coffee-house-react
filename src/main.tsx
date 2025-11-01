@@ -5,6 +5,7 @@ import App from "./App";
 import { CartProvider } from "./components/Card/cardContext";
 import CartPage from "./components/Card/CardPage";
 import MenuPage from "./components/Menu/MenuPage";
+import SignInPage from "./components/SignIn/SignInPage";
 import "./styles.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/" element={<App />} />
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/sign-in" element={<SignInPage />} />
       </Routes>
     </Router>
     </CartProvider>
