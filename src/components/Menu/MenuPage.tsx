@@ -23,7 +23,7 @@ const MenuPage: React.FC = () => {
   const [products, setProducts] = useState<ProductWithDetails[]>([]);
   const [activeCategory, setActiveCategory] = useState("coffee");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("coffee");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -41,14 +41,24 @@ const MenuPage: React.FC = () => {
   async function fetchProducts() {
     try {
       setLoading(true);
+      setError(null);
       const res = await fetch(
         "https://6kt29kkeub.execute-api.eu-central-1.amazonaws.com/products"
       );
+       if (!res.ok) {
+        throw new Error(`Server error: ${res.status}`);
+      }
+
       const data = await res.json();
+
+      if (!data?.data || !Array.isArray(data.data)) {
+        throw new Error("Invalid response format");
+      }
       setProducts(data.data);
     } catch (err) {
-      console.error(err);
-      setError(true);
+      console.error("Failed to fetch products:", err);
+      setError("Failed to load products. Try again later.");
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -57,10 +67,10 @@ const MenuPage: React.FC = () => {
   const filtered = products.filter(
     (p) => p.category.toLowerCase() === activeCategory
   );
+
   return (
     <div className="page-container">
       <Header />
-
       <section className="offer">
         <div className="offer-container">
           <h1 className="offer-heading">

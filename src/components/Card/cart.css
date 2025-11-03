@@ -303,8 +303,6 @@ body {
 }
 
 .original-price {
-  /* width: 69px;
-  height: 30px; */
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;
@@ -316,9 +314,6 @@ body {
   opacity: 0.5;
 }
 .discount-price {
-  /* margin: 0 auto;
-  width: 270px;
-  height: 30px; */
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;
