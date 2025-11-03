@@ -56,6 +56,7 @@ const SignInPage: React.FC = () => {
       }
 
       localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("username", login);
       window.location.href = "/menu";
     } catch {
       setAuthError(true);
@@ -81,6 +82,7 @@ const SignInPage: React.FC = () => {
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
                 onBlur={handleLoginBlur}
+                autoComplete="off"
               />
               <span className="error-message">{loginError}</span>
             </div>
@@ -93,6 +95,7 @@ const SignInPage: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onBlur={handlePasswordBlur}
+                 autoComplete="new-password"
               />
               <span className="error-message">{passwordError}</span>
             </div>

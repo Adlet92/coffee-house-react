@@ -22,6 +22,7 @@ const RegistrationPage: React.FC = () => {
   const [backendError, setBackendError] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
+
   const validateLogin = () => {
     const valid = /^[A-Za-z]{3,}$/.test(login.trim());
     setErrors((prev) => ({ ...prev, login: valid ? "" : "Login must start with a letter and be ≥ 3 chars." }));
@@ -66,17 +67,30 @@ const RegistrationPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const allValid =
-      validateLogin() &&
-      validatePassword() &&
-      validateConfirm() &&
-      validateCity() &&
-      validateStreet() &&
-      validateHouse() &&
-      validatePayment();
+  if (
+    login === "" &&
+    password === "" &&
+    confirmPassword === "" &&
+    city === "" &&
+    street === "" &&
+    house === "" &&
+    payment === ""
+  ) {
+    return;
+  }
 
-    setIsButtonDisabled(!allValid);
-  }, [login, password, confirmPassword, city, street, house, payment]);
+  const allValid =
+    validateLogin() &&
+    validatePassword() &&
+    validateConfirm() &&
+    validateCity() &&
+    validateStreet() &&
+    validateHouse() &&
+    validatePayment();
+
+  setIsButtonDisabled(!allValid);
+}, [login, password, confirmPassword, city, street, house, payment]);
+
 
   useEffect(() => {
     if (city) {
@@ -132,12 +146,24 @@ const RegistrationPage: React.FC = () => {
             <div className="form-row">
               <div className="form-group">
                 <label className="input-label">Login</label>
-                <input type="text" value={login} onChange={(e) => setLogin(e.target.value)} onBlur={validateLogin} />
+                <input
+                  type="text"
+                  value={login}
+                  onChange={(e) => setLogin(e.target.value)}
+                  onBlur={validateLogin}
+                  autoComplete="off"
+                />
                 <small className="error-msg">{errors.login}</small>
               </div>
               <div className="form-group">
                 <label className="input-label">Password</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} onBlur={validatePassword} />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onBlur={validatePassword}
+                  autoComplete="new-password"
+                />
                 <small className="error-msg">{errors.password}</small>
               </div>
               <div className="form-group">

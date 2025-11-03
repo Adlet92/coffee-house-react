@@ -1,24 +1,73 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "./Card/cardContext";
 
 const Header: React.FC = () => {
   const { cartCount } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+  const isSignInPage = location.pathname === "/sign-in";
+  const [username, setUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+    if (loggedIn && storedUsername) {
+      setUsername(storedUsername);
+    } else {
+      setUsername(null);
+    }
+  }, [location.pathname]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("username");
+    setUsername(null);
+    window.dispatchEvent(new Event("storage"));
+  };
+
   return (
     <header className="header">
-      <div className="logo">
+      <div
+        className="logo"
+        onClick={() => navigate("/")}
+        style={{ cursor: 'pointer' }}
+      >
         <img src="/img/main-page/logo.svg" alt="CoffeeShop Logo" className="logo-img" />
       </div>
 
-      <nav className="nav">
-        <ul>
-          <li><a href="#favorite-coffee">Favorite Coffee</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#mobile-app">Mobile App</a></li>
-          <li><a href="#contacts">Contacts</a></li>
-        </ul>
-      </nav>
+      {isHomePage ? (
+        <nav className="nav">
+          <ul>
+            <li><a href="#favorite-coffee">Favorite Coffee</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#mobile-app">Mobile App</a></li>
+            <li><a href="#contacts">Contacts</a></li>
+          </ul>
+        </nav>
+      ) : (
+       !isSignInPage && (
+          username ? (
+            <div className="user-info">
+              <span style={{ fontSize: "16px" }}>Hello, <strong>{username}</strong></span>
+                <button
+                  className="logout-button"
+                  onClick={handleLogout}
+                >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              className="login-btn"
+              onClick={() => navigate("/sign-in")}
+            >
+              Login
+            </button>
+          )
+        )
+      )}
       <div className="menu-wrapper">
         <div
           className="shopping-bag-icon"
