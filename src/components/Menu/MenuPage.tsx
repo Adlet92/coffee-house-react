@@ -4,6 +4,7 @@ import Footer from "../Footer";
 import Header from "../Header";
 import "./menu.css";
 import ProductModal from "./ProductModal";
+import Loader from "../Loader";
 
 interface Product {
   id: number;
@@ -102,7 +103,7 @@ const MenuPage: React.FC = () => {
 
       <section className="featured">
         <div className="featured-container">
-          {loading && <div className="loader">Loading menu...</div>}
+          {loading && <Loader text="Loading menu..." fullPage />}
           {error && (
             <div className="error">Failed to load products. Try again later.</div>
           )}

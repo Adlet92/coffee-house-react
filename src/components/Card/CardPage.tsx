@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Footer from "../Footer";
 import Header from "../Header";
+import Loader from "../Loader";
 import "./cart.css";
 
 interface CartItem {
@@ -136,7 +137,7 @@ const CartPage: React.FC = () => {
 
               <div className="cart-actions">
                 <button onClick={handleConfirmOrder} disabled={loading}>
-                  {loading ? "Processing..." : "Confirm Order"}
+                  {loading ? <Loader text="Processing..." fullPage /> : "Confirm Order"}
                 </button>
               </div>
             </>

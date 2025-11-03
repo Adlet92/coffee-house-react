@@ -8,7 +8,6 @@ import MobileAppSection from "./components/MobileAppSection";
 
 const App: React.FC = () => {
   return (
-    // <CartProvider>
     <div className="page-container">
       <Header />
       <Hero />
@@ -17,7 +16,6 @@ const App: React.FC = () => {
       <MobileAppSection />
       <Footer />
       </div>
-      // </CartProvider>
   );
 };
 
