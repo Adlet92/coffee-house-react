@@ -114,3 +114,10 @@ body {
 .hidden {
   display: none;
 }
+.auth-link {
+  cursor: pointer;
+  color: #007bff;
+}
+.switch-auth{
+
+}

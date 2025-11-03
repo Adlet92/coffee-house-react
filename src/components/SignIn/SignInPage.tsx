@@ -107,6 +107,15 @@ const SignInPage: React.FC = () => {
                 Incorrect login or password
               </p>
             )}
+            <p className="switch-auth">
+              Don't have an account?{" "}
+              <span
+                className="auth-link"
+                onClick={() => (window.location.href = "/register")}
+              >
+                Sign Up
+              </span>
+            </p>
           </form>
         </div>
       </section>

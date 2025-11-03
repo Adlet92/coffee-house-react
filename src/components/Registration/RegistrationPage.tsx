@@ -224,6 +224,15 @@ const RegistrationPage: React.FC = () => {
               Registration
             </button>
             {backendError && <p className="backend-error">{backendError}</p>}
+            <p className="switch-auth">
+              Already have an account?{" "}
+              <span
+                className="auth-link"
+                onClick={() => (window.location.href = "/sign-in")}
+              >
+                Sign In
+              </span>
+            </p>
           </form>
         </div>
       </section>

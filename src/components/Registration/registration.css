@@ -120,3 +120,12 @@ body {
   color: red;
   margin-top: 10px;
 }
+.switch-auth {
+  display: flex;
+  justify-content: center;
+}
+.auth-link {
+  cursor: pointer;
+  color: #007bff;
+  padding-left: 5px;
+}
