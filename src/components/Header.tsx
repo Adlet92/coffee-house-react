@@ -7,8 +7,8 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isHomePage = location.pathname === "/";
-  // const isSignInPage = location.pathname === "/sign-in";
   const isMenuPage = location.pathname === "/menu";
+  const isCartPage = location.pathname === "/cart";
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const Header: React.FC = () => {
             <li><a href="#contacts">Contacts</a></li>
           </ul>
         </nav>
-      ) : isMenuPage ? (
+      ) : (isMenuPage || isCartPage) ? (
         username ? (
           <div className="user-info">
             <span style={{ fontSize: "16px" }}>Hello, <strong>{username}</strong></span>

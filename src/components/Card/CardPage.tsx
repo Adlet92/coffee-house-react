@@ -38,17 +38,29 @@ const CartPage: React.FC = () => {
     saveCart(newCart);
   };
 
-  const totalPrice = cart.reduce((sum, item) => {
-    const price = isLoggedIn && item.discountPrice ? item.discountPrice : item.price;
-    return sum + price * item.quantity;
-  }, 0);
+  // const totalPrice = cart.reduce((sum, item) => {
+  //   const price = isLoggedIn && item.discountPrice ? item.discountPrice : item.price;
+  //   return sum + price * item.quantity;
+  // }, 0);
+
+  const totalOriginalPrice = cart.reduce(
+  (sum, item) => sum + item.price * item.quantity,
+  0
+  );
+  const totalDiscountPrice = cart.reduce((sum, item) => {
+  if (item.discountPrice) {
+    return sum + item.discountPrice * item.quantity;
+  }
+  return sum + item.price * item.quantity;
+}, 0);
 
   const handleConfirmOrder = async () => {
+    console.log("Confirm clicked. isLoggedIn:", isLoggedIn);
     if (!isLoggedIn) {
       window.location.href = "../sign-in-page/sign-in.html";
       return;
     }
-
+    console.log("Sending POST request...");
     setLoading(true);
 
     const body = {
@@ -58,8 +70,9 @@ const CartPage: React.FC = () => {
         additives: item.additives,
         quantity: item.quantity,
       })),
-      totalPrice,
+      totalPrice: isLoggedIn ? totalDiscountPrice : totalOriginalPrice,
     };
+  console.log("Request body:", body);
 
     try {
       const res = await fetch(
@@ -131,12 +144,31 @@ const CartPage: React.FC = () => {
               </div>
 
               <div className="cart-summary">
-                <span>Total:</span>
-                <span className="summary-price">${totalPrice.toFixed(2)}</span>
+                {/* <span>Total:</span> */}
+                <div className="summary-left">Total:</div>
+                {/* <span className="summary-price">${totalPrice.toFixed(2)}</span> */}
+                <div className="summary-right">
+                  {isLoggedIn ? (
+                    <div className="summary-prices">
+                      <span className="cart-original-price">${totalOriginalPrice.toFixed(2)}</span>
+                      <span className="cart-discount-price">${totalDiscountPrice.toFixed(2)}</span>
+                    </div>
+                  ) : (
+                    <span className="summary-price">${totalOriginalPrice.toFixed(2)}</span>
+                  )}
+                </div>
+                {/* {isLoggedIn ? (
+                  <div className="summary-prices">
+                    <span className="original-price">${totalOriginalPrice.toFixed(2)}</span>
+                    <span className="discount-price">${totalDiscountPrice.toFixed(2)}</span>
+                  </div>
+                ) : (
+                  <span className="summary-price">${totalOriginalPrice.toFixed(2)}</span>
+                )} */}
               </div>
 
               <div className="cart-actions">
-                <button onClick={handleConfirmOrder} disabled={loading}>
+                <button onClick={handleConfirmOrder} disabled={loading} className="confirm-order-btn">
                   {loading ? <Loader text="Processing..." fullPage /> : "Confirm Order"}
                 </button>
               </div>
