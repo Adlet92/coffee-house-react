@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { getImageNumber } from "../../utils/getImageNumber";
 import Footer from "../Footer";
 import Header from "../Header";
+import Loader from "../Loader";
 import "./menu.css";
 import ProductModal from "./ProductModal";
-import Loader from "../Loader";
 
 interface Product {
   id: number;
@@ -28,6 +28,8 @@ const MenuPage: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("coffee");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const isUserLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
 
   const categories = [
     { name: "Coffee", icon: "/img/menu-page/coffee-icon.png" },
@@ -135,7 +137,7 @@ const MenuPage: React.FC = () => {
                   <h3 className="product-name">{product.name}</h3>
                   <p className="product-description">{product.description}</p>
                   <div className="price-container">
-                    {product.discountPrice ? (
+                    {isUserLoggedIn && product.discountPrice ? (
                       <>
                         <span className="discount-price">
                           ${product.discountPrice}
@@ -157,7 +159,7 @@ const MenuPage: React.FC = () => {
           category={selectedCategory}
           index={selectedIndex}
           onClose={() => setSelectedProduct(null)}
-          isUserLoggedIn={false}
+          isUserLoggedIn={isUserLoggedIn}
         />
       )}
       <Footer />

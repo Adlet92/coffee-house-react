@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Footer from "../Footer";
 import Header from "../Header";
+import Loader from "../Loader";
 import "./sign-in.css";
 
 const SignInPage: React.FC = () => {
@@ -10,6 +11,7 @@ const SignInPage: React.FC = () => {
   const [passwordError, setPasswordError] = useState("");
   const [authError, setAuthError] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateLogin = (value: string) => /^[A-Za-z][A-Za-z]{2,}$/.test(value);
   const validatePassword = (value: string) => value.length >= 6 && /[^a-zA-Z0-9]/.test(value);
@@ -37,6 +39,7 @@ const SignInPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(false);
+    setIsLoading(true);
 
     const payload = { login, password };
 
@@ -52,6 +55,7 @@ const SignInPage: React.FC = () => {
 
       if (!res.ok) {
         setAuthError(true);
+        setIsLoading(false);
         return;
       }
 
@@ -60,11 +64,9 @@ const SignInPage: React.FC = () => {
       window.location.href = "/menu";
     } catch {
       setAuthError(true);
+      setIsLoading(false);
     }
   };
-
-  // const goToMenu = () => (window.location.href = "/menu");
-  // const goToCart = () => (window.location.href = "/cart");
 
   return (
     <div className="page-container">
@@ -83,6 +85,7 @@ const SignInPage: React.FC = () => {
                 onChange={(e) => setLogin(e.target.value)}
                 onBlur={handleLoginBlur}
                 autoComplete="off"
+                disabled={isLoading}
               />
               <span className="error-message">{loginError}</span>
             </div>
@@ -95,27 +98,34 @@ const SignInPage: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onBlur={handlePasswordBlur}
-                 autoComplete="new-password"
+                autoComplete="new-password"
+                disabled={isLoading}
               />
               <span className="error-message">{passwordError}</span>
             </div>
-            <button id="signInBtn" type="submit" disabled={isButtonDisabled}>
-              Sign In
-            </button>
-            {authError && (
-              <p id="authError" className="auth-error">
-                Incorrect login or password
+              {isLoading ? (
+                <Loader text="Signing In..." />
+              ) : (
+                  <>
+                    <button id="signInBtn" type="submit" disabled={isButtonDisabled}>
+                Sign In
+              </button>
+              {authError && (
+                <p id="authError" className="auth-error">
+                  Incorrect login or password
+                </p>
+              )}
+              <p className="switch-auth">
+                Don't have an account?{" "}
+                <span
+                  className="auth-link"
+                  onClick={() => (window.location.href = "/register")}
+                >
+                  Sign Up
+                </span>
               </p>
-            )}
-            <p className="switch-auth">
-              Don't have an account?{" "}
-              <span
-                className="auth-link"
-                onClick={() => (window.location.href = "/register")}
-              >
-                Sign Up
-              </span>
-            </p>
+                  </>
+                )}
           </form>
         </div>
       </section>

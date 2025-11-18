@@ -100,11 +100,11 @@ html {
   cursor: pointer;
 }
 .menu-wrapper {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  position: relative;
   gap: 4px;
   cursor: pointer;
-  width: 72px;
   height: 28px;
 }
 .menu-text {
@@ -126,10 +126,12 @@ html {
   height: 20px;
 }
 
-.menu-wrapper {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
+.shopping-bag-icon {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  padding-right: 20px;
 }
 
 .header-line {

@@ -7,7 +7,8 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isHomePage = location.pathname === "/";
-  const isSignInPage = location.pathname === "/sign-in";
+  // const isSignInPage = location.pathname === "/sign-in";
+  const isMenuPage = location.pathname === "/menu";
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
@@ -46,27 +47,19 @@ const Header: React.FC = () => {
             <li><a href="#contacts">Contacts</a></li>
           </ul>
         </nav>
-      ) : (
-       !isSignInPage && (
-          username ? (
-            <div className="user-info">
-              <span style={{ fontSize: "16px" }}>Hello, <strong>{username}</strong></span>
-                <button
-                  className="logout-button"
-                  onClick={handleLogout}
-                >
-                Logout
-              </button>
-            </div>
-          ) : (
-            <button
-              className="login-btn"
-              onClick={() => navigate("/sign-in")}
-            >
-              Login
-            </button>
-          )
+      ) : isMenuPage ? (
+        username ? (
+          <div className="user-info">
+            <span style={{ fontSize: "16px" }}>Hello, <strong>{username}</strong></span>
+            <button className="logout-button" onClick={handleLogout}>Logout</button>
+          </div>
+        ) : (
+          <button className="login-btn" onClick={() => navigate("/sign-in")}>
+            Login
+          </button>
         )
+      ) : (
+        <div style={{ height: "24px" }}></div>
       )}
       <div className="menu-wrapper">
         <div
