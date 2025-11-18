@@ -111,6 +111,21 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
     return basePrice + additivesPrice;
   };
+
+  const calculateOriginalPrice = () => {
+  if (!product) return 0;
+
+  const sizeData = product.sizes[selectedSize];
+  const basePrice = parseFloat(sizeData.price);
+
+  const additivesPrice = selectedAdditives.reduce((acc, name) => {
+    const additive = product.additives.find(a => a.name === name);
+    return acc + (additive ? parseFloat(additive.price) : 0);
+  }, 0);
+
+  return basePrice + additivesPrice;
+};
+
     const handleAddToCart = () => {
     if (!product) return;
 
@@ -149,6 +164,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
   };
 
   const price = calculatePrice();
+  const originalPrice = calculateOriginalPrice();
 
   if (!productId) return null;
 
@@ -232,7 +248,14 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
                 <div className="modal-price">
                   <span className="modal-final-price">Total:</span>
-                  <span className="modal-final-price">${price.toFixed(2)}</span>
+                  {isUserLoggedIn && originalPrice !== price ? (
+                    <div className="modal-price-discount">
+                      <span className="discount-price">${price.toFixed(2)}</span>
+                      <span className="original-price">${originalPrice.toFixed(2)}</span>
+                    </div>
+                  ) : (
+                    <span className="modal-final-price">${price.toFixed(2)}</span>
+                  )}
                 </div>
                   <button className="add-to-cart-btn" onClick={handleAddToCart}>
                     Add to cart
