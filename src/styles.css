@@ -94,6 +94,8 @@ html {
   font-size: 14px,
 }
 .login-btn{
+  display: flex;
+  justify-content: flex-end;
   background: transparent;
   border: none;
   font-size: 16px;
