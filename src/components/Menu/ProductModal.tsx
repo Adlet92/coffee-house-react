@@ -55,6 +55,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
     if (!productId) return;
 
     const fetchProductDetails = async () => {
+      setLoading(true);
+      setError(null);
+      setProduct(null);
       try {
         setLoading(true);
         setError(null);
@@ -63,8 +66,11 @@ const ProductModal: React.FC<ProductModalProps> = ({
         );
         if (!response.ok) throw new Error("Failed to load product details");
 
-        const { data }: { data: ProductWithDetails } = await response.json();
-        setProduct(data);
+        // const { data }: { data: ProductWithDetails } = await response.json();
+        const json = await response.json();
+        if (!json.data) throw new Error("No product data");
+        setProduct(json.data);
+        // setProduct(data);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         setError("Failed to load product details. Please try again.");
@@ -189,9 +195,10 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
         <div className="modal-content">
           {loading && <p className="modal-loading">Loading...</p>}
-          {error && <p className="modal-error">{error}</p>}
+          {/* {error && <p className="modal-error">{error}</p>} */}
+          {!loading && error && <p className="modal-error">{error}</p>}
 
-          {!loading && product && (
+          {!loading && !error && product && (
             <>
               <img
                 src={`/img/menu-page/${category}-${getImageNumber(category, index)}.svg`}
