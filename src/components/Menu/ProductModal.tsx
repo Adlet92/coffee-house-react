@@ -131,13 +131,24 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
     const additivesArr = selectedAdditives;
     const sizeData = product.sizes[selectedSize];
-    const basePrice = isUserLoggedIn && sizeData.discountPrice ? parseFloat(sizeData.discountPrice) : parseFloat(sizeData.price);
+    const basePrice = parseFloat(sizeData.price);
+    const baseDiscountPrice = sizeData.discountPrice ? parseFloat(sizeData.discountPrice) : undefined;
+    // const basePrice = isUserLoggedIn && sizeData.discountPrice ? parseFloat(sizeData.discountPrice) : parseFloat(sizeData.price);
     const additivesPrice = selectedAdditives.reduce((acc, name) => {
       const additive = product.additives.find(a => a.name === name);
       return acc + (additive ? parseFloat(additive.price) : 0);
     }, 0);
 
+    const additivesDiscountPrice = selectedAdditives.reduce((acc, name) => {
+    const additive = product.additives.find(a => a.name === name);
+    if (additive && additive.discountPrice) {
+      return acc + parseFloat(additive.discountPrice);
+    }
+    return acc + (additive ? parseFloat(additive.price) : 0);
+  }, 0);
+
     const totalPrice = basePrice + additivesPrice;
+    const totalDiscountPrice = (baseDiscountPrice || basePrice) + additivesDiscountPrice;
 
     addToCart({
       id: product.id,
@@ -145,6 +156,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
       size: sizeData.size,
       additives: additivesArr,
       price: totalPrice,
+      discountPrice: isUserLoggedIn && baseDiscountPrice ? totalDiscountPrice : undefined,
       quantity: 1,
       img: `/img/menu-page/${category}-${getImageNumber(category, index)}.svg`,
     });

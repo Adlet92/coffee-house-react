@@ -116,7 +116,7 @@ body {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  gap: 10px;
+  gap: 20px;
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;
@@ -186,6 +186,16 @@ body {
   opacity: 0.5;
 }
 .cart-discount-price {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 125%;
+  color: #403F3D;
+}
+.cart-item-discount-price{
+  margin: 0 auto;
+  height: 30px;
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;

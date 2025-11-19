@@ -1,47 +1,33 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../Footer";
 import Header from "../Header";
 import Loader from "../Loader";
+import { useCart } from "./cardContext";
 import "./cart.css";
 
-interface CartItem {
-  id: number;
-  name: string;
-  size: string;
-  additives: string[];
-  price: number;
-  discountPrice?: number;
-  quantity: number;
-  img?: string;
-}
+// interface CartItem {
+//   id: number;
+//   name: string;
+//   size: string;
+//   additives: string[];
+//   price: number;
+//   discountPrice?: number;
+//   quantity: number;
+//   img?: string;
+// }
 
 const CartPage: React.FC = () => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const { cart, removeFromCart, clearCart } = useCart();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [notification, setNotification] = useState<string>("");
   const [orderMessage, setOrderMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    setCart(storedCart ? JSON.parse(storedCart) : []);
     setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
   }, []);
-
-  const saveCart = (newCart: CartItem[]) => {
-    localStorage.setItem("cart", JSON.stringify(newCart));
-    setCart(newCart);
-  };
-
-  const removeFromCart = (id: number) => {
-    const newCart = cart.filter((item) => item.id !== id);
-    saveCart(newCart);
-  };
-
-  // const totalPrice = cart.reduce((sum, item) => {
-  //   const price = isLoggedIn && item.discountPrice ? item.discountPrice : item.price;
-  //   return sum + price * item.quantity;
-  // }, 0);
 
   const totalOriginalPrice = cart.reduce(
   (sum, item) => sum + item.price * item.quantity,
@@ -55,12 +41,10 @@ const CartPage: React.FC = () => {
 }, 0);
 
   const handleConfirmOrder = async () => {
-    console.log("Confirm clicked. isLoggedIn:", isLoggedIn);
     if (!isLoggedIn) {
-      window.location.href = "../sign-in-page/sign-in.html";
+      navigate("/sign-in")
       return;
     }
-    console.log("Sending POST request...");
     setLoading(true);
 
     const body = {
@@ -72,7 +56,6 @@ const CartPage: React.FC = () => {
       })),
       totalPrice: isLoggedIn ? totalDiscountPrice : totalOriginalPrice,
     };
-  console.log("Request body:", body);
 
     try {
       const res = await fetch(
@@ -91,9 +74,7 @@ const CartPage: React.FC = () => {
         setTimeout(() => setNotification(""), 3000);
         return;
       }
-
-      localStorage.removeItem("cart");
-      setCart([]);
+      clearCart();
       setOrderMessage("Thank you for your order! Our manager will contact you shortly.");
     } catch {
       setLoading(false);
@@ -101,6 +82,8 @@ const CartPage: React.FC = () => {
       setTimeout(() => setNotification(""), 3000);
     }
   };
+  const hasAnyDiscount = cart.some(item => item.discountPrice);
+
   return (
       <div className="page-container">
         <Header />
@@ -133,7 +116,7 @@ const CartPage: React.FC = () => {
                       {isLoggedIn && item.discountPrice ? (
                         <>
                           <p className="original-price">${item.price.toFixed(2)}</p>
-                          <p className="discount-price">${item.discountPrice.toFixed(2)}</p>
+                          <p className="cart-item-discount-price">${item.discountPrice.toFixed(2)}</p>
                         </>
                       ) : (
                         <p>${item.price.toFixed(2)}</p>
@@ -144,11 +127,9 @@ const CartPage: React.FC = () => {
               </div>
 
               <div className="cart-summary">
-                {/* <span>Total:</span> */}
                 <div className="summary-left">Total:</div>
-                {/* <span className="summary-price">${totalPrice.toFixed(2)}</span> */}
                 <div className="summary-right">
-                  {isLoggedIn ? (
+                  {isLoggedIn && hasAnyDiscount ? (
                     <div className="summary-prices">
                       <span className="cart-original-price">${totalOriginalPrice.toFixed(2)}</span>
                       <span className="cart-discount-price">${totalDiscountPrice.toFixed(2)}</span>
@@ -157,14 +138,6 @@ const CartPage: React.FC = () => {
                     <span className="summary-price">${totalOriginalPrice.toFixed(2)}</span>
                   )}
                 </div>
-                {/* {isLoggedIn ? (
-                  <div className="summary-prices">
-                    <span className="original-price">${totalOriginalPrice.toFixed(2)}</span>
-                    <span className="discount-price">${totalDiscountPrice.toFixed(2)}</span>
-                  </div>
-                ) : (
-                  <span className="summary-price">${totalOriginalPrice.toFixed(2)}</span>
-                )} */}
               </div>
 
               <div className="cart-actions">
@@ -180,8 +153,8 @@ const CartPage: React.FC = () => {
 
           {!isLoggedIn && cart.length === 0 && (
             <div className="confirm-buttons">
-              <button className="sign-in-btn" onClick={() => (window.location.href = "/sign-in")}>Sign In</button>
-              <button className="checkout-btn" onClick={() => (window.location.href = "/register")}>Registration</button>
+              <button className="sign-in-btn" onClick={() => (navigate("/sign-in"))}>Sign In</button>
+              <button className="checkout-btn" onClick={() => (navigate("/register"))}>Registration</button>
             </div>
           )}
         </section>
