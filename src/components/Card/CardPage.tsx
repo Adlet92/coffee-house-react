@@ -101,6 +101,9 @@ const CartPage: React.FC = () => {
                         {item.additives.length > 0 ? ", " + item.additives.join(", ") : ""}
                       </p>
                     </div>
+                    <div className="cart-item-qty">
+                      x{item.quantity}
+                    </div>
                     <div className="cart-item-price">
                       {isLoggedIn && item.discountPrice ? (
                         <>

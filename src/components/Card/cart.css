@@ -111,6 +111,18 @@ body {
   opacity: 0.8;
   font-family: 'Inter';
 }
+.cart-item-qty{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 125%;
+  color: #403F3D;
+  margin-right: 20px;
+}
 
 .cart-item-price {
   display: flex;

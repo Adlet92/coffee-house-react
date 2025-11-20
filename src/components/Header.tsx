@@ -51,7 +51,7 @@ const Header: React.FC = () => {
             <li><a href="#contacts">Contacts</a></li>
           </ul>
         </nav>
-      ) : (isMenuPage || isCartPage) ? (
+      ) : (isMenuPage || isCartPage ) ? (
         username ? (
           <div className="user-info">
             <span style={{ fontSize: "16px" }}>Hello, <strong>{username}</strong></span>
