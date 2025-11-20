@@ -21,6 +21,10 @@ const Header: React.FC = () => {
     }
   }, [location.pathname]);
 
+  const handleMenuClick = () => {
+  navigate("/menu");
+};
+
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("username");
@@ -70,13 +74,13 @@ const Header: React.FC = () => {
           <img src="../img/menu-page/shopping-bag.svg" alt="Cart Icon" className="cart-icon"/>
           <span className={`cart-count ${cartCount === 0 ? "hidden" : ""}`}>{cartCount}</span>
         </div>
-        <a href="/menu" className="menu-link">
+        <div className="menu-link" onClick={handleMenuClick}>
           <div className="menu-wrapper">
           <span className="menu-text">Menu</span>
           <img src="/img/main-page/coffee-cup.svg" alt="Cup Icon" className="menu-icon" />
           <div className="header-line"></div>
         </div>
-        </a>
+        </div>
       </div>
     </header>
   );
