@@ -6,17 +6,6 @@ import Loader from "../Loader";
 import { useCart } from "./cardContext";
 import "./cart.css";
 
-// interface CartItem {
-//   id: number;
-//   name: string;
-//   size: string;
-//   additives: string[];
-//   price: number;
-//   discountPrice?: number;
-//   quantity: number;
-//   img?: string;
-// }
-
 const CartPage: React.FC = () => {
   const { cart, removeFromCart, clearCart } = useCart();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -139,19 +128,20 @@ const CartPage: React.FC = () => {
                   )}
                 </div>
               </div>
-
-              <div className="cart-actions">
+              {isLoggedIn && (
+                <div className="cart-actions">
                 <button onClick={handleConfirmOrder} disabled={loading} className="confirm-order-btn">
                   {loading ? <Loader text="Processing..." fullPage /> : "Confirm Order"}
                 </button>
               </div>
+              )}
             </>
           )}
 
           {notification && <div className="notification-error">{notification}</div>}
           {orderMessage && <div className="order-message">{orderMessage}</div>}
 
-          {!isLoggedIn && cart.length === 0 && (
+          {!isLoggedIn && (
             <div className="confirm-buttons">
               <button className="sign-in-btn" onClick={() => (navigate("/sign-in"))}>Sign In</button>
               <button className="checkout-btn" onClick={() => (navigate("/register"))}>Registration</button>
