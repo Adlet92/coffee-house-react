@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+.page-container {
+  width: 1440px;
+  min-height: 100vh;
+  height: auto;
+  transition: all 0.4s ease;
+  margin: 0 auto;
+  background: #E1D4C9;
+  position: relative;
+}
+
+.registration-container {
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 60px;
+}
+
+.registration-title {
+  text-align: center;
+  margin-bottom: 40px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 60px;
+  line-height: 125%;
+  color: #403F3D;
+}
+
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+.input-label {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  color: #403F3D;
+}
+
+.form-row {
+  display: flex;
+  gap: 40px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0px 12px;
+  gap: 8px;
+  height: 56px;
+  border: 1px solid #C1B6AD;
+  border-radius: 12px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  color: #A1A8B3;
+  background: transparent;
+}
+
+.form-group input.error,
+.form-group select.error {
+  border: 2px solid red;
+}
+
+.payment-block {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.payment-options {
+  display: flex;
+  gap: 15px;
+}
+
+.error-msg {
+  font-size: 12px;
+  color: red;
+  height: 14px;
+}
+
+.register-btn {
+  width: 140px;
+  padding: 12px;
+  border-radius: 20px;
+  background: transparent;
+  border: 2px solid #403F3D;
+  transition: 0.2s;
+  margin: 0 auto;
+  font-weight: 600;
+  transition: background-color 0.3s, cursor 0.3s, opacity 0.3s;
+}
+.register-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.backend-error {
+  text-align: center;
+  color: red;
+  margin-top: 10px;
+}
+.switch-auth {
+  display: flex;
+  justify-content: center;
+}
+.auth-link {
+  cursor: pointer;
+  color: #007bff;
+  padding-left: 5px;
+}

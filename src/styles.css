@@ -14,7 +14,7 @@ html {
 }
 .page-container {
   width: 1440px;
-  height: 4388px;
+  height: auto;
   margin: 0 auto;
   background: #E1D4C9;
   overflow: hidden;
@@ -80,13 +80,33 @@ html {
   transform: translateX(-50%) scaleX(1);
   opacity: 1;
 }
-
-.menu-wrapper {
+.user-info {
   display: flex;
+  justify-content: end;
+  gap: 8px;
+}
+.logout-button{
+  background: transparent;
+  border: 1px solid #6F4E37;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 14px,
+}
+.login-btn{
+  display: flex;
+  justify-content: flex-end;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+.menu-wrapper {
+  display: inline-flex;
   align-items: center;
+  position: relative;
   gap: 4px;
   cursor: pointer;
-  width: 72px;
   height: 28px;
 }
 .menu-text {
@@ -108,10 +128,12 @@ html {
   height: 20px;
 }
 
-.menu-wrapper {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
+.shopping-bag-icon {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  padding-right: 20px;
 }
 
 .header-line {
@@ -208,6 +230,7 @@ html {
   order: 2;
   flex-grow: 0;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .btn-text {
@@ -240,7 +263,7 @@ html {
 
 .featured {
   width: 1440px;
-  height: 799px;
+  /* height: 799px; */
   margin: 0 auto;
   padding: 0px 40px;
   position: relative;

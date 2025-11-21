@@ -1,0 +1,291 @@
+import React, { useEffect, useState } from "react";
+import { getImageNumber } from "../../utils/getImageNumber";
+import { useCart } from "../Card/cardContext";
+import "./menu.css";
+
+type Size = {
+  [key: string]: {
+    size: string;
+    price: string;
+    discountPrice?: string;
+  };
+};
+
+type Additive = {
+  name: string;
+  price: string;
+  discountPrice?: string;
+};
+
+interface ProductWithDetails {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  discountPrice?: string;
+  category: string;
+  sizes: Size;
+  additives: Additive[];
+}
+
+interface ProductModalProps {
+  productId: number | null;
+  category: string;
+  index: number;
+  onClose: () => void;
+  isUserLoggedIn?: boolean;
+}
+
+const ProductModal: React.FC<ProductModalProps> = ({
+  productId,
+  category,
+  index,
+  onClose,
+  isUserLoggedIn = false,
+}) => {
+  const [product, setProduct] = useState<ProductWithDetails | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("s");
+  const [selectedAdditives, setSelectedAdditives] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [visibleTooltip, setVisibleTooltip] = useState<string | null>(null);
+  const { addToCart } = useCart();
+
+  useEffect(() => {
+    if (!productId) return;
+
+    const fetchProductDetails = async () => {
+      setLoading(true);
+      setError(null);
+      setProduct(null);
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch(
+          `https://6kt29kkeub.execute-api.eu-central-1.amazonaws.com/products/${productId}`
+        );
+        if (!response.ok) throw new Error("Failed to load product details");
+
+        // const { data }: { data: ProductWithDetails } = await response.json();
+        const json = await response.json();
+        if (!json.data) throw new Error("No product data");
+        setProduct(json.data);
+        // setProduct(data);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (err) {
+        setError("Failed to load product details. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProductDetails();
+  }, [productId]);
+
+  useEffect(() => {
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      onClose();
+    }
+  };
+
+  document.addEventListener("keydown", handleKeyDown);
+  return () => document.removeEventListener("keydown", handleKeyDown);
+}, [onClose]);
+
+
+  const handleToggleAdditive = (name: string) => {
+    setSelectedAdditives((prev) =>
+      prev.includes(name)
+        ? prev.filter((a) => a !== name)
+        : [...prev, name]
+    );
+  };
+
+  const calculatePrice = () => {
+    if (!product) return 0;
+
+    const sizeData = product.sizes[selectedSize];
+    const basePrice = isUserLoggedIn && sizeData.discountPrice
+      ? parseFloat(sizeData.discountPrice)
+      : parseFloat(sizeData.price);
+
+    const additivesPrice = selectedAdditives.reduce((acc, name) => {
+      const additive = product.additives.find((a) => a.name === name);
+      return acc + (additive ? parseFloat(additive.price) : 0);
+    }, 0);
+
+    return basePrice + additivesPrice;
+  };
+
+  const calculateOriginalPrice = () => {
+  if (!product) return 0;
+
+  const sizeData = product.sizes[selectedSize];
+  const basePrice = parseFloat(sizeData.price);
+
+  const additivesPrice = selectedAdditives.reduce((acc, name) => {
+    const additive = product.additives.find(a => a.name === name);
+    return acc + (additive ? parseFloat(additive.price) : 0);
+  }, 0);
+
+  return basePrice + additivesPrice;
+};
+
+    const handleAddToCart = () => {
+    if (!product) return;
+
+    const additivesArr = selectedAdditives;
+    const sizeData = product.sizes[selectedSize];
+    const basePrice = parseFloat(sizeData.price);
+    const baseDiscountPrice = sizeData.discountPrice ? parseFloat(sizeData.discountPrice) : undefined;
+    // const basePrice = isUserLoggedIn && sizeData.discountPrice ? parseFloat(sizeData.discountPrice) : parseFloat(sizeData.price);
+    const additivesPrice = selectedAdditives.reduce((acc, name) => {
+      const additive = product.additives.find(a => a.name === name);
+      return acc + (additive ? parseFloat(additive.price) : 0);
+    }, 0);
+
+    const additivesDiscountPrice = selectedAdditives.reduce((acc, name) => {
+    const additive = product.additives.find(a => a.name === name);
+    if (additive && additive.discountPrice) {
+      return acc + parseFloat(additive.discountPrice);
+    }
+    return acc + (additive ? parseFloat(additive.price) : 0);
+  }, 0);
+
+    const totalPrice = basePrice + additivesPrice;
+    const totalDiscountPrice = (baseDiscountPrice || basePrice) + additivesDiscountPrice;
+
+    addToCart({
+      id: product.id,
+      name: product.name,
+      size: sizeData.size,
+      additives: additivesArr,
+      price: totalPrice,
+      discountPrice: isUserLoggedIn && baseDiscountPrice ? totalDiscountPrice : undefined,
+      quantity: 1,
+      img: `/img/menu-page/${category}-${getImageNumber(category, index)}.svg`,
+    });
+
+    onClose();
+  };
+
+   const createTooltipContent = (price: string, discountPrice?: string) => {
+    if (isUserLoggedIn && discountPrice) {
+      return (
+        <span className="tooltip-price">
+          <s>${price}</s> <strong>${discountPrice}</strong>
+        </span>
+      );
+    }
+    return <span className="tooltip-price">${price}</span>;
+  };
+
+  const price = calculatePrice();
+  const originalPrice = calculateOriginalPrice();
+
+  if (!productId) return null;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close-icon" onClick={onClose}>
+          ×
+        </button>
+
+        <div className="modal-content">
+          {loading && <p className="modal-loading">Loading...</p>}
+          {/* {error && <p className="modal-error">{error}</p>} */}
+          {!loading && error && <p className="modal-error">{error}</p>}
+
+          {!loading && !error && product && (
+            <>
+              <img
+                src={`/img/menu-page/${category}-${getImageNumber(category, index)}.svg`}
+                alt={product.name}
+                className="modal-img"
+              />
+              <div className="modal-info">
+                <h2 className="modal-name">{product.name}</h2>
+                <p className="modal-description">{product.description}</p>
+
+                <div className="modal-sizes">
+                  <h4 className="size-title">Size</h4>
+                  <div className="size-options">
+                    {Object.entries(product.sizes).map(([key, size]) => (
+                      <button
+                        key={key}
+                        className={`size-btn ${selectedSize === key ? "active" : ""}`}
+                        onClick={() => setSelectedSize(key)}
+                        onMouseEnter={() => setVisibleTooltip(`size-${key}`)}
+                        onMouseLeave={() => setVisibleTooltip(null)}
+                      >
+                        <div className="size-circle">{key.toUpperCase()}</div>
+                        <div className="size-volume">{size.size}</div>
+
+                        <div
+                          className={`tooltip ${
+                            visibleTooltip === `size-${key}` ? "visible" : ""
+                          }`}
+                        >
+                          {createTooltipContent(size.price, size.discountPrice)}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="modal-additives">
+                  <h4 className="additives-title">Additives</h4>
+                  <div className="additive-options">
+                    {product.additives.map((additive, idx) => (
+                      <button
+                        key={idx}
+                        className={`additive-btn ${
+                          selectedAdditives.includes(additive.name) ? "active" : ""
+                        }`}
+                        onClick={() => handleToggleAdditive(additive.name)}
+                        onMouseEnter={() => setVisibleTooltip(`add-${idx}`)}
+                        onMouseLeave={() => setVisibleTooltip(null)}
+                      >
+                        <div className="additive-circle">{idx + 1}</div>
+                        <span>{additive.name}</span>
+                        <div
+                          className={`tooltip ${
+                            visibleTooltip === `add-${idx}` ? "visible" : ""
+                          }`}
+                        >
+                          {createTooltipContent(
+                            additive.price,
+                            additive.discountPrice
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="modal-price">
+                  <span className="modal-final-price">Total:</span>
+                  {isUserLoggedIn && originalPrice !== price ? (
+                    <div className="modal-price-discount">
+                      <span className="discount-price">${price.toFixed(2)}</span>
+                      <span className="original-price">${originalPrice.toFixed(2)}</span>
+                    </div>
+                  ) : (
+                    <span className="modal-final-price">${price.toFixed(2)}</span>
+                  )}
+                </div>
+                  <button className="add-to-cart-btn" onClick={handleAddToCart}>
+                    Add to cart
+                  </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductModal;

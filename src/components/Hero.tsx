@@ -1,7 +1,12 @@
 import React from "react";
-import "../styles.css";
+import { useNavigate } from "react-router-dom";
 
 const Hero: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleMenuClick = () => {
+    navigate("/menu");
+  };
   return (
     <section className="hero">
       <div className="hero-content">
@@ -16,9 +21,9 @@ const Hero: React.FC = () => {
           House is the perfect destination for coffee lovers seeking a relaxing
           experience.
         </p>
-        <a href="/menu-page/menu.html" className="hero-btn">
+        <button className="hero-btn" onClick={handleMenuClick}>
           Menu
-        </a>
+        </button>
       </div>
 
       <video
